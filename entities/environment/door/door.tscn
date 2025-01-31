@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://0myomtgxxfdf"]
+
+[ext_resource type="Script" path="res://entities/environment/door/door.gd" id="1_ua8o4"]
+[ext_resource type="Texture2D" uid="uid://cquk3hvnktbd5" path="res://levels/tilemaps/objects/exterior/summer and spring items.png" id="2_7vjka"]
+[ext_resource type="PackedScene" uid="uid://c3lwm8mgkb5yt" path="res://common/interactable/interactable.tscn" id="3_8l4f8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pl3lg"]
+size = Vector2(18, 26)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pbwi5"]
+radius = 10.5119
+
+[node name="StaticBody2D" type="StaticBody2D"]
+collision_layer = 16
+script = ExtResource("1_ua8o4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_7vjka")
+region_enabled = true
+region_rect = Rect2(109, 32, 18, 28)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_pl3lg")
+
+[node name="Interactable" parent="." instance=ExtResource("3_8l4f8")]
+position = Vector2(-0.5, 8.5)
+interact_name = "Unlock Door"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable"]
+shape = SubResource("CircleShape2D_pbwi5")
+debug_color = Color(0, 0.642016, 0.324845, 0.42)

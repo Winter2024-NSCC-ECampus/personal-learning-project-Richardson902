@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://c6jrd8lkqhkx1"]
+
+[ext_resource type="Script" path="res://common/interactable/interacting_component.gd" id="1_6qrcd"]
+[ext_resource type="FontFile" uid="uid://6fs334ar16vp" path="res://assets/fonts/16bfZX.ttf" id="1_t0oos"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bcqeh"]
+radius = 5.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_6cqex"]
+font = ExtResource("1_t0oos")
+
+[node name="InteractingComponent" type="Node2D"]
+script = ExtResource("1_6qrcd")
+
+[node name="InteractRange" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractRange"]
+shape = SubResource("CircleShape2D_bcqeh")
+
+[node name="InteractLabel" type="Label" parent="."]
+z_index = 10
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = -29.0
+offset_right = 86.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.363994, 0.363994)
+label_settings = SubResource("LabelSettings_6cqex")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="area_entered" from="InteractRange" to="." method="_on_interact_range_area_entered"]
+[connection signal="area_exited" from="InteractRange" to="." method="_on_interact_range_area_exited"]

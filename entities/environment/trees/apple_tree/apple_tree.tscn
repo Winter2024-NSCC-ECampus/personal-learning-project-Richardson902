@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://c2x4uclp225cs"]
+
+[ext_resource type="Script" path="res://entities/environment/trees/apple_tree/apple_tree.gd" id="1_d885g"]
+[ext_resource type="Texture2D" uid="uid://cquk3hvnktbd5" path="res://levels/tilemaps/objects/exterior/summer and spring items.png" id="2_q2jxc"]
+[ext_resource type="PackedScene" uid="uid://c3lwm8mgkb5yt" path="res://common/interactable/interactable.tscn" id="3_23g1b"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_npktc"]
+size = Vector2(19, 5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vtyq3"]
+radius = 13.0
+
+[node name="AppleTree" type="StaticBody2D"]
+collision_layer = 16
+script = ExtResource("1_d885g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 2.5)
+shape = SubResource("RectangleShape2D_npktc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_q2jxc")
+offset = Vector2(0, -18)
+region_enabled = true
+region_rect = Rect2(60, 160, 36, 48)
+
+[node name="Interactable" parent="." instance=ExtResource("3_23g1b")]
+interact_name = "Pick Apple"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable"]
+position = Vector2(0, 1)
+shape = SubResource("CircleShape2D_vtyq3")
+debug_color = Color(0.0686772, 0.643799, 0.255857, 0.42)
+
+[node name="GrowthTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(0, 5)
+
+[connection signal="timeout" from="GrowthTimer" to="." method="_on_growth_timer_timeout"]

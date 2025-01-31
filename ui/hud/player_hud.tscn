@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://dv5y8lhduy7kt"]
+
+[ext_resource type="Script" path="res://ui/hud/player_hud.gd" id="1_ti0fp"]
+[ext_resource type="FontFile" uid="uid://6fs334ar16vp" path="res://assets/fonts/16bfZX.ttf" id="2_kvyl2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_04g44"]
+font = ExtResource("2_kvyl2")
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_ti0fp")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ItemsCollected" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -15.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Items Collected: 0"
+label_settings = SubResource("LabelSettings_04g44")
+horizontal_alignment = 1
+vertical_alignment = 1

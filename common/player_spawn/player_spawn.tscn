@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://3lpw8elti0u8"]
+
+[ext_resource type="Texture2D" uid="uid://d0ckuil6rq16f" path="res://entities/player/art/body/head-sheet.png" id="1_kk1re"]
+[ext_resource type="Texture2D" uid="uid://be81e15sh5iyy" path="res://entities/player/art/body/body-sheet.png" id="2_xfblw"]
+
+[node name="PlayerSpawn" type="Node2D"]
+position = Vector2(0, -5)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 0.85098, 0.27451, 0.356863)
+texture = ExtResource("1_kk1re")
+offset = Vector2(0, -7)
+hframes = 4
+vframes = 6
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+modulate = Color(0, 0.85098, 0.27451, 0.356863)
+texture = ExtResource("2_xfblw")
+offset = Vector2(0, -7)
+hframes = 4
+vframes = 6

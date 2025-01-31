@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://dndp6cnwvw0nt"]
+
+[ext_resource type="Script" path="res://ui/customization/customizeui.gd" id="1_mc2b7"]
+
+[node name="customizeui" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_mc2b7")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_top = -22.0
+offset_right = 97.0
+offset_bottom = 27.0
+color = Color(0, 0, 0, 0)
+
+[node name="HairCheck" type="CheckBox" parent="ColorRect"]
+layout_mode = 0
+offset_left = 47.0
+offset_top = 8.0
+offset_right = 154.0
+offset_bottom = 39.0
+scale = Vector2(0.3, 0.3)
+text = "Equip hair"
+
+[node name="ShirtCheck" type="CheckBox" parent="ColorRect"]
+layout_mode = 0
+offset_left = 47.0
+offset_top = 17.0
+offset_right = 160.0
+offset_bottom = 48.0
+scale = Vector2(0.3, 0.3)
+text = "Equip Shirt"
+
+[node name="PantsCheck" type="CheckBox" parent="ColorRect"]
+layout_mode = 0
+offset_left = 47.0
+offset_top = 26.0
+offset_right = 167.0
+offset_bottom = 57.0
+scale = Vector2(0.3, 0.3)
+text = "Equip Pants"
+
+[node name="ShoesCheck" type="CheckBox" parent="ColorRect"]
+layout_mode = 0
+offset_left = 47.0
+offset_top = 35.0
+offset_right = 169.0
+offset_bottom = 66.0
+scale = Vector2(0.3, 0.3)
+text = "Equip Shoes"
+
+[connection signal="toggled" from="ColorRect/HairCheck" to="." method="_on_hair_check_toggled"]
+[connection signal="toggled" from="ColorRect/ShirtCheck" to="." method="_on_shirt_check_toggled"]
+[connection signal="toggled" from="ColorRect/PantsCheck" to="." method="_on_pants_check_toggled"]
+[connection signal="toggled" from="ColorRect/ShoesCheck" to="." method="_on_shoes_check_toggled"]
