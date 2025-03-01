@@ -6,7 +6,7 @@ extends StaticBody2D
 @onready var growth_timer: Timer = $GrowthTimer
 @onready var marker: Marker2D = $Marker2D
 
-var apple = preload("res://entities/environment/foraging/apple/apple.tscn")
+var apple = preload("res://entities/items/apple/apple.tscn")
 
 # Regions for open and closed frames of the door (yucky tilemap thing, would rather use frame indexes)
 var apples = Rect2(Vector2(60, 160), Vector2(36, 48))
@@ -31,7 +31,6 @@ func update_state() -> void:
 func pick_apples() -> void:
 	has_apples = false
 	update_state()
-	#growth_timer.start()
 	drop_apple()
 
 func _on_growth_timer_timeout() -> void:

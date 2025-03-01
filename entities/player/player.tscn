@@ -1,21 +1,578 @@
-[gd_scene load_steps=22 format=3 uid="uid://bnmeel6sct6ng"]
+[gd_scene load_steps=44 format=3 uid="uid://bnmeel6sct6ng"]
 
 [ext_resource type="Script" path="res://entities/player/player.gd" id="1_1pgh5"]
 [ext_resource type="Texture2D" uid="uid://be81e15sh5iyy" path="res://entities/player/art/body/body-sheet.png" id="1_d8tdn"]
 [ext_resource type="Script" path="res://entities/camera/camera_controller.gd" id="2_aknpy"]
+[ext_resource type="Texture2D" uid="uid://2om0rlnvrjvy" path="res://common/combat/art/AttackSwing.png" id="2_khgcy"]
 [ext_resource type="Texture2D" uid="uid://d0ckuil6rq16f" path="res://entities/player/art/body/head-sheet.png" id="2_pfh13"]
 [ext_resource type="Texture2D" uid="uid://bagjaxitiyg6u" path="res://entities/player/art/clothing/hair-sheet.png" id="3_0as8i"]
 [ext_resource type="Texture2D" uid="uid://44cqefxyt2jk" path="res://entities/player/art/clothing/shirt-sheet.png" id="4_lor33"]
 [ext_resource type="Texture2D" uid="uid://kum1foh7w1j1" path="res://entities/player/art/clothing/pants-sheet.png" id="5_ntlje"]
 [ext_resource type="Texture2D" uid="uid://blr584bbe1bhk" path="res://entities/player/art/clothing/shoes-sheet.png" id="6_xmhyv"]
 [ext_resource type="PackedScene" uid="uid://dndp6cnwvw0nt" path="res://ui/customization/customizeui.tscn" id="8_ut0kn"]
-[ext_resource type="Script" path="res://common/state_management/player_state_machine.gd" id="9_k1vn5"]
-[ext_resource type="Script" path="res://common/state_management/state_idle.gd" id="10_s3dge"]
-[ext_resource type="Script" path="res://common/state_management/state_walk.gd" id="11_a0fdc"]
+[ext_resource type="Script" path="res://common/state_management/player_state_machine/player_state_machine.gd" id="9_k1vn5"]
+[ext_resource type="AudioStream" uid="uid://jwbewbmcvspx" path="res://common/combat/sfx/hit_player.wav" id="10_orgt6"]
+[ext_resource type="Script" path="res://common/state_management/player_state_machine/state_idle.gd" id="10_s3dge"]
+[ext_resource type="Script" path="res://common/state_management/player_state_machine/state_walk.gd" id="11_a0fdc"]
+[ext_resource type="Script" path="res://common/state_management/player_state_machine/state_attack.gd" id="12_6wwd1"]
 [ext_resource type="PackedScene" uid="uid://c6jrd8lkqhkx1" path="res://common/interactable/interacting_component.tscn" id="13_guero"]
+[ext_resource type="AudioStream" uid="uid://bcgigpdtr28mo" path="res://common/combat/sfx/swing.wav" id="14_3j3cg"]
+[ext_resource type="Script" path="res://common/state_management/player_state_machine/state_stun.gd" id="16_hcm6v"]
+[ext_resource type="PackedScene" uid="uid://n2u5bjewpnuq" path="res://common/combat/hurtbox/hurtbox.tscn" id="17_b2kyc"]
+[ext_resource type="PackedScene" uid="uid://cn4n2tbynew25" path="res://common/combat/hitbox/hitbox.tscn" id="18_qk4xg"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_3vb8y"]
 radius = 2.54951
+
+[sub_resource type="Animation" id="Animation_wpfah"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:show_behind_parent")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_sebdx"]
+resource_name = "attack_down"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0, 3]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:show_behind_parent")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_n7tpf"]
+resource_name = "attack_hide"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_16x0t"]
+resource_name = "attack_side"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [8, 11]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:show_behind_parent")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_fmk2n"]
+resource_name = "attack_up"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [4, 7]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:show_behind_parent")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ntk77"]
+_data = {
+"RESET": SubResource("Animation_wpfah"),
+"attack_down": SubResource("Animation_sebdx"),
+"attack_hide": SubResource("Animation_n7tpf"),
+"attack_side": SubResource("Animation_16x0t"),
+"attack_up": SubResource("Animation_fmk2n")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dd6nm"]
+radius = 13.0
+
+[sub_resource type="Animation" id="Animation_krxow"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [20]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [20]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [20]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [20]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [20]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [20]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PlayerSprites/Skeleton/AttackHurtBox:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 13)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("PlayerSprites/Skeleton:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_w8ok4"]
+resource_name = "attack_down"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [24, 27]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [24, 27]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [24, 27]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [24, 27]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [24, 27]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [24, 27]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PlayerSprites/Skeleton/AttackHurtBox:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 13)]
+}
+
+[sub_resource type="Animation" id="Animation_h1ddo"]
+resource_name = "attack_side"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [28, 31]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [28, 31]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [28, 31]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [28, 31]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [28, 31]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [28, 31]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PlayerSprites/Skeleton/AttackHurtBox:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(13, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_q0ob3"]
+resource_name = "attack_up"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [32, 35]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [32, 35]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [32, 35]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [32, 35]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [32, 35]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.266667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [32, 35]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PlayerSprites/Skeleton/AttackHurtBox:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -13)]
+}
 
 [sub_resource type="Animation" id="Animation_qdvub"]
 resource_name = "idle_down"
@@ -23,7 +580,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Skeleton/Body:frame")
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -35,7 +592,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Skeleton/Head:frame")
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -47,7 +604,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Skeleton/Hair:frame")
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -59,7 +616,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Skeleton/Shirt:frame")
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -71,7 +628,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Skeleton/Pants:frame")
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -83,7 +640,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Skeleton/Shoes:frame")
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -98,7 +655,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Skeleton/Body:frame")
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -110,7 +667,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Skeleton/Head:frame")
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -122,7 +679,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Skeleton/Hair:frame")
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -134,7 +691,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Skeleton/Shirt:frame")
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -146,7 +703,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Skeleton/Pants:frame")
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -158,7 +715,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Skeleton/Shoes:frame")
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -174,7 +731,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Skeleton/Body:frame")
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -186,7 +743,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Skeleton/Head:frame")
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -198,7 +755,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Skeleton/Hair:frame")
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -210,7 +767,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Skeleton/Shirt:frame")
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -222,7 +779,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Skeleton/Pants:frame")
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -234,7 +791,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Skeleton/Shoes:frame")
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -244,6 +801,318 @@ tracks/5/keys = {
 "values": [8, 9, 10, 11]
 }
 
+[sub_resource type="Animation" id="Animation_6pkua"]
+resource_name = "stun_down"
+length = 0.3
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [13, 0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [13, 0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [13, 0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [13, 0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [13, 0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [13, 0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PlayerSprites/Skeleton:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+tracks/7/type = "audio"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Audio/AudioStreamPlayer2D")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("10_orgt6")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/7/use_blend = true
+
+[sub_resource type="Animation" id="Animation_e10db"]
+resource_name = "stun_side"
+length = 0.3
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [17, 4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [17, 4]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [17, 4]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [17, 4]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [17, 4]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [17, 4]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PlayerSprites/Skeleton:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+tracks/7/type = "audio"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Audio/AudioStreamPlayer2D")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("10_orgt6")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/7/use_blend = true
+
+[sub_resource type="Animation" id="Animation_xcol3"]
+resource_name = "stun_up"
+length = 0.3
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [21, 8]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [21, 8]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [21, 8]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [21, 8]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [21, 8]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [21, 8]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PlayerSprites/Skeleton:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+tracks/7/type = "audio"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Audio/AudioStreamPlayer2D")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("10_orgt6")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/7/use_blend = true
+
 [sub_resource type="Animation" id="Animation_2b38w"]
 resource_name = "walk_down"
 length = 0.5
@@ -251,7 +1120,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Skeleton/Body:frame")
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -263,7 +1132,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Skeleton/Head:frame")
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -275,7 +1144,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Skeleton/Hair:frame")
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -287,7 +1156,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Skeleton/Shirt:frame")
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -299,7 +1168,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Skeleton/Pants:frame")
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -311,7 +1180,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Skeleton/Shoes:frame")
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -327,7 +1196,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Skeleton/Body:frame")
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -339,7 +1208,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Skeleton/Head:frame")
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -351,7 +1220,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Skeleton/Hair:frame")
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -363,7 +1232,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Skeleton/Shirt:frame")
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -375,7 +1244,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Skeleton/Pants:frame")
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -387,7 +1256,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Skeleton/Shoes:frame")
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -404,7 +1273,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Skeleton/Body:frame")
+tracks/0/path = NodePath("PlayerSprites/Skeleton/Body:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -416,7 +1285,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Skeleton/Head:frame")
+tracks/1/path = NodePath("PlayerSprites/Skeleton/Head:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -428,7 +1297,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Skeleton/Hair:frame")
+tracks/2/path = NodePath("PlayerSprites/Skeleton/Hair:frame")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -440,7 +1309,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Skeleton/Shirt:frame")
+tracks/3/path = NodePath("PlayerSprites/Skeleton/Shirt:frame")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -452,7 +1321,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Skeleton/Pants:frame")
+tracks/4/path = NodePath("PlayerSprites/Skeleton/Pants:frame")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -464,7 +1333,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Skeleton/Shoes:frame")
+tracks/5/path = NodePath("PlayerSprites/Skeleton/Shoes:frame")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -476,13 +1345,23 @@ tracks/5/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6jbss"]
 _data = {
+"RESET": SubResource("Animation_krxow"),
+"attack_down": SubResource("Animation_w8ok4"),
+"attack_side": SubResource("Animation_h1ddo"),
+"attack_up": SubResource("Animation_q0ob3"),
 "idle_down": SubResource("Animation_qdvub"),
 "idle_side": SubResource("Animation_k6x6o"),
 "idle_up": SubResource("Animation_e6r2l"),
+"stun_down": SubResource("Animation_6pkua"),
+"stun_side": SubResource("Animation_e10db"),
+"stun_up": SubResource("Animation_xcol3"),
 "walk_down": SubResource("Animation_2b38w"),
 "walk_side": SubResource("Animation_234h7"),
 "walk_up": SubResource("Animation_fy870")
 }
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6rvi2"]
+radius = 7.0
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 y_sort_enabled = true
@@ -496,49 +1375,78 @@ script = ExtResource("1_1pgh5")
 position = Vector2(0.5, 2.42)
 shape = SubResource("CircleShape2D_3vb8y")
 
-[node name="Skeleton" type="Node2D" parent="."]
+[node name="PlayerSprites" type="Node2D" parent="."]
 
-[node name="Body" type="Sprite2D" parent="Skeleton"]
+[node name="Skeleton" type="Node2D" parent="PlayerSprites"]
+
+[node name="Body" type="Sprite2D" parent="PlayerSprites/Skeleton"]
 texture_filter = 1
 texture = ExtResource("1_d8tdn")
 offset = Vector2(0, -7)
 hframes = 4
-vframes = 6
+vframes = 9
+frame = 20
 
-[node name="Head" type="Sprite2D" parent="Skeleton"]
+[node name="Head" type="Sprite2D" parent="PlayerSprites/Skeleton"]
 texture_filter = 1
 texture = ExtResource("2_pfh13")
 offset = Vector2(0, -7)
 hframes = 4
-vframes = 6
+vframes = 9
+frame = 20
 
-[node name="Hair" type="Sprite2D" parent="Skeleton"]
+[node name="Hair" type="Sprite2D" parent="PlayerSprites/Skeleton"]
 texture_filter = 1
 texture = ExtResource("3_0as8i")
 offset = Vector2(0, -7)
 hframes = 4
-vframes = 6
+vframes = 9
+frame = 20
 
-[node name="Shirt" type="Sprite2D" parent="Skeleton"]
-texture_filter = 1
-texture = ExtResource("4_lor33")
-offset = Vector2(0, -7)
-hframes = 4
-vframes = 6
-
-[node name="Pants" type="Sprite2D" parent="Skeleton"]
+[node name="Pants" type="Sprite2D" parent="PlayerSprites/Skeleton"]
 texture_filter = 1
 texture = ExtResource("5_ntlje")
 offset = Vector2(0, -7)
 hframes = 4
-vframes = 6
+vframes = 9
+frame = 20
 
-[node name="Shoes" type="Sprite2D" parent="Skeleton"]
+[node name="Shirt" type="Sprite2D" parent="PlayerSprites/Skeleton"]
+texture_filter = 1
+texture = ExtResource("4_lor33")
+offset = Vector2(0, -7)
+hframes = 4
+vframes = 9
+frame = 20
+
+[node name="Shoes" type="Sprite2D" parent="PlayerSprites/Skeleton"]
 texture_filter = 1
 texture = ExtResource("6_xmhyv")
 offset = Vector2(0, -7)
 hframes = 4
-vframes = 6
+vframes = 9
+frame = 20
+
+[node name="Swing" type="Sprite2D" parent="PlayerSprites/Skeleton"]
+texture = ExtResource("2_khgcy")
+hframes = 12
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PlayerSprites/Skeleton/Swing"]
+libraries = {
+"": SubResource("AnimationLibrary_ntk77")
+}
+autoplay = "attack_hide"
+
+[node name="AttackHurtBox" parent="PlayerSprites/Skeleton" instance=ExtResource("17_b2kyc")]
+unique_name_in_owner = true
+position = Vector2(0, 13)
+collision_mask = 256
+monitoring = false
+damage = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerSprites/Skeleton/AttackHurtBox"]
+shape = SubResource("CircleShape2D_dd6nm")
+debug_color = Color(0.90265, 0.294429, 0.243426, 0.42)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -556,6 +1464,14 @@ script = ExtResource("10_s3dge")
 
 [node name="Walk" type="Node" parent="StateMachine"]
 script = ExtResource("11_a0fdc")
+move_speed = null
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("12_6wwd1")
+attack_sound = ExtResource("14_3j3cg")
+
+[node name="Stun" type="Node" parent="StateMachine"]
+script = ExtResource("16_hcm6v")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2, 2)
@@ -567,3 +1483,15 @@ drag_bottom_margin = 0.1
 script = ExtResource("2_aknpy")
 
 [node name="InteractingComponent" parent="." instance=ExtResource("13_guero")]
+
+[node name="Audio" type="Node2D" parent="."]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Audio"]
+max_polyphony = 4
+
+[node name="HitBox" parent="." instance=ExtResource("18_qk4xg")]
+collision_layer = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource("CircleShape2D_6rvi2")
+debug_color = Color(0.623408, 0.530367, 0.14226, 0.42)

@@ -1,10 +1,11 @@
 extends Control
 
 # Grap di link fi di nodes dem!
-@onready var hair = $"../Skeleton/Hair"
-@onready var shirt = $"../Skeleton/Shirt"
-@onready var pants = $"../Skeleton/Pants"
-@onready var shoes = $"../Skeleton/Shoes"
+@onready var hair: Sprite2D = $"../PlayerSprites/Skeleton/Hair"
+@onready var pants: Sprite2D = $"../PlayerSprites/Skeleton/Pants"
+@onready var shirt: Sprite2D = $"../PlayerSprites/Skeleton/Shirt"
+@onready var shoes: Sprite2D = $"../PlayerSprites/Skeleton/Shoes"
+
 @onready var haircheck = $ColorRect/HairCheck
 @onready var shirtcheck = $ColorRect/ShirtCheck
 @onready var pantscheck = $ColorRect/PantsCheck

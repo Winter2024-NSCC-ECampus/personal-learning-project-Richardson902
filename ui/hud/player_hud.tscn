@@ -1,10 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://dv5y8lhduy7kt"]
+[gd_scene load_steps=8 format=3 uid="uid://dv5y8lhduy7kt"]
 
 [ext_resource type="Script" path="res://ui/hud/player_hud.gd" id="1_ti0fp"]
 [ext_resource type="FontFile" uid="uid://6fs334ar16vp" path="res://assets/fonts/16bfZX.ttf" id="2_kvyl2"]
+[ext_resource type="PackedScene" uid="uid://1uhunhvs8njd" path="res://ui/hud/heart_gui.tscn" id="2_r3wr2"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_04g44"]
 font = ExtResource("2_kvyl2")
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2jxi1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5it6c"]
+bg_color = Color(0.28488, 0.72, 0.1872, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_yx3k0"]
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
@@ -18,6 +28,81 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+
+[node name="HFlowContainer" type="HFlowContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -211.0
+offset_top = 5.0
+offset_right = -14.0
+offset_bottom = 223.0
+grow_horizontal = 0
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 7
+alignment = 2
+
+[node name="Heart" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart2" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart3" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart4" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart5" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart6" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart7" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart8" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart9" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart10" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart11" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart12" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart13" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart14" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart15" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart16" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart17" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart18" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart19" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
+
+[node name="Heart20" parent="Control/HFlowContainer" instance=ExtResource("2_r3wr2")]
+layout_mode = 2
 
 [node name="ItemsCollected" type="Label" parent="Control"]
 layout_mode = 1
@@ -34,3 +119,38 @@ text = "Items Collected: 0"
 label_settings = SubResource("LabelSettings_04g44")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="XpBar" type="ProgressBar" parent="Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -11.0
+offset_right = 175.0
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_2jxi1")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5it6c")
+show_percentage = false
+
+[node name="TextLevel" type="Label" parent="Control/XpBar"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -12.0
+offset_right = 34.0
+offset_bottom = 11.0
+theme_override_fonts/font = ExtResource("2_kvyl2")
+text = "Level"
+label_settings = SubResource("LabelSettings_yx3k0")
+horizontal_alignment = 1
+
+[node name="Level" type="Label" parent="Control/XpBar"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = -12.0
+offset_right = 58.0
+offset_bottom = 11.0
+theme_override_fonts/font = ExtResource("2_kvyl2")
+text = "1
+"
+label_settings = SubResource("LabelSettings_yx3k0")
+horizontal_alignment = 1
